@@ -122,7 +122,7 @@ ProcessDomainList() {
         else
             RemoveDomain "${dom}"
         fi
-  done
+    done
 }
 
 AddDomain() {
@@ -134,19 +134,19 @@ AddDomain() {
     requestedListname="$(GetListnameFromTypeId "${typeId}")"
 
     if [[ "${num}" -ne 0 ]]; then
-      existingTypeId="$(sqlite3 "${gravityDBfile}" "SELECT type FROM domainlist WHERE domain = '${domain}';")"
-      if [[ "${existingTypeId}" == "${typeId}" ]]; then
-        if [[ "${verbose}" == true ]]; then
-            echo -e "  ${INFO} ${1} already exists in ${requestedListname}, no need to add!"
+        existingTypeId="$(sqlite3 "${gravityDBfile}" "SELECT type FROM domainlist WHERE domain = '${domain}';")"
+        if [[ "${existingTypeId}" == "${typeId}" ]]; then
+            if [[ "${verbose}" == true ]]; then
+                echo -e "  ${INFO} ${1} already exists in ${requestedListname}, no need to add!"
+            fi
+        else
+            existingListname="$(GetListnameFromTypeId "${existingTypeId}")"
+            sqlite3 "${gravityDBfile}" "UPDATE domainlist SET type = ${typeId} WHERE domain='${domain}';"
+            if [[ "${verbose}" == true ]]; then
+                echo -e "  ${INFO} ${1} already exists in ${existingListname}, it has been moved to ${requestedListname}!"
+            fi
         fi
-      else
-        existingListname="$(GetListnameFromTypeId "${existingTypeId}")"
-        sqlite3 "${gravityDBfile}" "UPDATE domainlist SET type = ${typeId} WHERE domain='${domain}';"
-        if [[ "${verbose}" == true ]]; then
-            echo -e "  ${INFO} ${1} already exists in ${existingListname}, it has been moved to ${requestedListname}!"
-        fi
-      fi
-      return
+        return
     fi
 
     # Domain not found in the table, add it!
@@ -174,10 +174,10 @@ RemoveDomain() {
     requestedListname="$(GetListnameFromTypeId "${typeId}")"
 
     if [[ "${num}" -eq 0 ]]; then
-      if [[ "${verbose}" == true ]]; then
-          echo -e "  ${INFO} ${domain} does not exist in ${requestedListname}, no need to remove!"
-      fi
-      return
+        if [[ "${verbose}" == true ]]; then
+            echo -e "  ${INFO} ${domain} does not exist in ${requestedListname}, no need to remove!"
+        fi
+        return
     fi
 
     # Domain found in the table, remove it!
@@ -232,21 +232,21 @@ Displaylist() {
 
 NukeList() {
     count=$(sqlite3 "${gravityDBfile}" "SELECT COUNT(1) FROM domainlist WHERE type = ${typeId};")
-    listname="$(GetListnameFromTypeId "${typeId}")"    
-    if [ "$count" -gt 0 ];then
+    listname="$(GetListnameFromTypeId "${typeId}")"
+    if [ "$count" -gt 0 ]; then
         sqlite3 "${gravityDBfile}" "DELETE FROM domainlist WHERE type = ${typeId};"
         echo "  ${TICK} Removed ${count} domain(s) from the ${listname}"
     else
         echo "  ${INFO} ${listname} already empty. Nothing to do!"
-    fi    
+    fi
     exit 0;
 }
 
 GetComment() {
     comment="$1"
     if [[ "${comment}" =~ [^a-zA-Z0-9_\#:/\.,\ -] ]]; then
-      echo "  ${CROSS} Found invalid characters in domain comment!"
-      exit
+        echo "  ${CROSS} Found invalid characters in domain comment!"
+        exit
     fi
 }
 
@@ -281,7 +281,7 @@ ProcessDomainList
 
 # Used on web interface
 if $web; then
-echo "DONE"
+    echo "DONE"
 fi
 
 if [[ "${reload}" != false ]]; then

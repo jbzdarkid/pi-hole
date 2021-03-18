@@ -158,7 +158,7 @@ Time:
       local error=false
       if [[ "${2}" == *"s" ]]; then
         tt=${2%"s"}
-        if [[ "${tt}" =~ ^-?[0-9]+$ ]];then
+        if [[ "${tt}" =~ ^-?[0-9]+$ ]]; then
           local str="Disabling blocking for ${tt} seconds"
           echo -e "  ${INFO} ${str}..."
           local str="Blocking will be re-enabled in ${tt} seconds"
@@ -168,7 +168,7 @@ Time:
         fi
       elif [[ "${2}" == *"m" ]]; then
         tt=${2%"m"}
-          if [[ "${tt}" =~ ^-?[0-9]+$ ]];then
+          if [[ "${tt}" =~ ^-?[0-9]+$ ]]; then
           local str="Disabling blocking for ${tt} minutes"
           echo -e "  ${INFO} ${str}..."
           local str="Blocking will be re-enabled in ${tt} minutes"
@@ -183,7 +183,7 @@ Time:
         echo -e "  ${INFO} Disabling blocking"
       fi
 
-      if [[ ${error} == true ]];then
+      if [[ ${error} == true ]]; then
         echo -e "  ${COL_LIGHT_RED}Unknown format for delayed reactivation of the blocking!${COL_NC}"
         echo -e "  Try 'pihole disable --help' for more information."
         exit 1
@@ -461,7 +461,7 @@ case "${1}" in
 esac
 
 # Must be root to use this tool
-if [[ ! $EUID -eq 0 ]];then
+if [[ ! $EUID -eq 0 ]]; then
   if [[ -x "$(command -v sudo)" ]]; then
     exec sudo bash "$0" "$@"
     exit $?

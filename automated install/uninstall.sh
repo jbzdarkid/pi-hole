@@ -113,7 +113,7 @@ removeNoPurge() {
         fi
     fi
     echo -e "${OVER}  ${TICK} Removed Web Interface"
- 
+
     # Attempt to preserve backwards compatibility with older versions
     # to guarantee no additional changes were made to /etc/crontab after
     # the installation of pihole, /etc/crontab.pihole should be permanently
@@ -126,7 +126,7 @@ removeNoPurge() {
     fi
 
     # Attempt to preserve backwards compatibility with older versions
-    if [[ -f /etc/cron.d/pihole ]];then
+    if [[ -f /etc/cron.d/pihole ]]; then
         ${SUDO} rm -f /etc/cron.d/pihole &> /dev/null
         echo -e "  ${TICK} Removed /etc/cron.d/pihole"
     fi

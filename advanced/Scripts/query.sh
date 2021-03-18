@@ -99,15 +99,15 @@ scanDatabaseTable() {
     # behavior. The "ESCAPE '\'" clause specifies that an underscore preceded by an '\' should be matched
     # as a literal underscore character. We pretreat the $domain variable accordingly to escape underscores.
     if [[ "${table}" == "gravity" ]]; then
-      case "${exact}" in
-          "exact" ) querystr="SELECT gravity.domain,adlist.address,adlist.enabled FROM gravity LEFT JOIN adlist ON adlist.id = gravity.adlist_id WHERE domain = '${domain}'";;
-          *       ) querystr="SELECT gravity.domain,adlist.address,adlist.enabled FROM gravity LEFT JOIN adlist ON adlist.id = gravity.adlist_id WHERE domain LIKE '%${domain//_/\\_}%' ESCAPE '\\'";;
-      esac
+        case "${exact}" in
+            "exact" ) querystr="SELECT gravity.domain,adlist.address,adlist.enabled FROM gravity LEFT JOIN adlist ON adlist.id = gravity.adlist_id WHERE domain = '${domain}'";;
+            *       ) querystr="SELECT gravity.domain,adlist.address,adlist.enabled FROM gravity LEFT JOIN adlist ON adlist.id = gravity.adlist_id WHERE domain LIKE '%${domain//_/\\_}%' ESCAPE '\\'";;
+        esac
     else
-      case "${exact}" in
-          "exact" ) querystr="SELECT domain,enabled FROM domainlist WHERE type = '${type}' AND domain = '${domain}'";;
-          *       ) querystr="SELECT domain,enabled FROM domainlist WHERE type = '${type}' AND domain LIKE '%${domain//_/\\_}%' ESCAPE '\\'";;
-      esac
+        case "${exact}" in
+            "exact" ) querystr="SELECT domain,enabled FROM domainlist WHERE type = '${type}' AND domain = '${domain}'";;
+            *       ) querystr="SELECT domain,enabled FROM domainlist WHERE type = '${type}' AND domain LIKE '%${domain//_/\\_}%' ESCAPE '\\'";;
+        esac
     fi
 
     # Send prepared query to gravity database
@@ -118,8 +118,8 @@ scanDatabaseTable() {
     fi
 
     if [[ "${table}" == "gravity" ]]; then
-      echo "${result}"
-      return
+        echo "${result}"
+        return
     fi
 
     # Mark domain as having been white-/blacklist matched (global variable)
@@ -223,9 +223,9 @@ for result in "${results[@]}"; do
     adlistAddress="${extra/|*/}"
     extra="${extra#*|}"
     if [[ "${extra}" == "0" ]]; then
-      extra="(disabled)"
+        extra="(disabled)"
     else
-      extra=""
+        extra=""
     fi
 
     if [[ -n "${blockpage}" ]]; then

@@ -44,7 +44,7 @@ domainsExtension="domains"
 
 # Source setupVars from install script
 setupVars="${piholeDir}/setupVars.conf"
-if [[ -f "${setupVars}" ]];then
+if [[ -f "${setupVars}" ]]; then
   source "${setupVars}"
 
   # Remove CIDR mask from IPv4/6 addresses
@@ -199,7 +199,7 @@ database_table_from_file() {
   # Move source file to backup directory, create directory if not existing
   mkdir -p "${backup_path}"
   mv "${source}" "${backup_file}" 2> /dev/null || \
-      echo -e "  ${CROSS} Unable to backup ${source} to ${backup_path}"
+    echo -e "  ${CROSS} Unable to backup ${source} to ${backup_path}"
 
   # Delete tmpFile
   rm "${tmpFile}" > /dev/null 2>&1 || \
@@ -412,9 +412,9 @@ gravity_DownloadBlocklists() {
     compression="--compressed"
     echo -e "  ${INFO} Using libz compression\n"
   else
-      compression=""
-      echo -e "  ${INFO} Libz compression not available\n"
-    fi
+    compression=""
+    echo -e "  ${INFO} Libz compression not available\n"
+  fi
   # Loop through $sources and download each one
   for ((i = 0; i < "${#sources[@]}"; i++)); do
     url="${sources[$i]}"
@@ -444,9 +444,9 @@ gravity_DownloadBlocklists() {
     check_url="$( sed -re 's#([^:/]*://)?([^/]+)@#\1\2#' <<< "$url" )"
 
     if [[ "${check_url}" =~ ${regex} ]]; then
-        echo -e "  ${CROSS} Invalid Target"
+      echo -e "  ${CROSS} Invalid Target"
     else
-       gravity_DownloadBlocklistFromUrl "${url}" "${cmd_ext}" "${agent}" "${sourceIDs[$i]}" "${saveLocation}" "${target}" "${compression}"
+      gravity_DownloadBlocklistFromUrl "${url}" "${cmd_ext}" "${agent}" "${sourceIDs[$i]}" "${saveLocation}" "${target}" "${compression}"
     fi
     echo ""
   done
@@ -581,9 +581,9 @@ gravity_DownloadBlocklistFromUrl() {
   if [[ "${blocked}" == true ]]; then
     printf -v ip_addr "%s" "${PIHOLE_DNS_1%#*}"
     if [[ ${PIHOLE_DNS_1} != *"#"* ]]; then
-        port=53
+      port=53
     else
-        printf -v port "%s" "${PIHOLE_DNS_1#*#}"
+      printf -v port "%s" "${PIHOLE_DNS_1#*#}"
     fi
     ip=$(dig "@${ip_addr}" -p "${port}" +short "${domain}" | tail -1)
     if [[ $(echo "${url}" | awk -F '://' '{print $1}') = "https" ]]; then

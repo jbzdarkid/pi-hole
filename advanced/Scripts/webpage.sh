@@ -121,14 +121,14 @@ SetWebPassword() {
         read -s -r -p "Enter New Password (Blank for no password): " PASSWORD
         echo ""
 
-    if [ "${PASSWORD}" == "" ]; then
-        change_setting "WEBPASSWORD" ""
-        echo -e "  ${TICK} Password Removed"
-        exit 0
-    fi
+        if [ "${PASSWORD}" == "" ]; then
+            change_setting "WEBPASSWORD" ""
+            echo -e "  ${TICK} Password Removed"
+            exit 0
+        fi
 
-    read -s -r -p "Confirm Password: " CONFIRM
-    echo ""
+        read -s -r -p "Confirm Password: " CONFIRM
+        echo ""
     fi
 
     if [ "${PASSWORD}" == "${CONFIRM}" ] ; then
@@ -237,7 +237,7 @@ trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC68345710423
         #          1.168.192.in-addr.arpa to 192.168.1.0/24
         #          168.192.in-addr.arpa to 192.168.0.0/16
         #          192.in-addr.arpa to 192.0.0.0/8
-        if [[ "${CONDITIONAL_FORWARDING_REVERSE}" == *"in-addr.arpa" ]];then
+        if [[ "${CONDITIONAL_FORWARDING_REVERSE}" == *"in-addr.arpa" ]]; then
             arrRev=("${CONDITIONAL_FORWARDING_REVERSE//./ }")
             case ${#arrRev[@]} in
                 6   )   REV_SERVER_CIDR="${arrRev[3]}.${arrRev[2]}.${arrRev[1]}.${arrRev[0]}/32";;
@@ -246,8 +246,8 @@ trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC68345710423
                 3   )   REV_SERVER_CIDR="${arrRev[0]}.0.0.0/8";;
             esac
         else
-          # Set REV_SERVER_CIDR to whatever value it was set to
-          REV_SERVER_CIDR="${CONDITIONAL_FORWARDING_REVERSE}"
+            # Set REV_SERVER_CIDR to whatever value it was set to
+            REV_SERVER_CIDR="${CONDITIONAL_FORWARDING_REVERSE}"
         fi
 
         # If REV_SERVER_CIDR is not converted by the above, then use the REV_SERVER_TARGET variable to derive it
@@ -365,34 +365,34 @@ ProcessDHCPSettings() {
     source "${setupVars}"
 
     if [[ "${DHCP_ACTIVE}" == "true" ]]; then
-    interface="${PIHOLE_INTERFACE}"
+        interface="${PIHOLE_INTERFACE}"
 
-    # Use eth0 as fallback interface
-    if [ -z ${interface} ]; then
-        interface="eth0"
-    fi
+        # Use eth0 as fallback interface
+        if [ -z ${interface} ]; then
+            interface="eth0"
+        fi
 
-    if [[ "${PIHOLE_DOMAIN}" == "" ]]; then
-        PIHOLE_DOMAIN="lan"
-        change_setting "PIHOLE_DOMAIN" "${PIHOLE_DOMAIN}"
-    fi
+        if [[ "${PIHOLE_DOMAIN}" == "" ]]; then
+            PIHOLE_DOMAIN="lan"
+            change_setting "PIHOLE_DOMAIN" "${PIHOLE_DOMAIN}"
+        fi
 
-    if [[ "${DHCP_LEASETIME}" == "0" ]]; then
-        leasetime="infinite"
-    elif [[ "${DHCP_LEASETIME}" == "" ]]; then
-        leasetime="24"
-        change_setting "DHCP_LEASETIME" "${leasetime}"
-    elif [[ "${DHCP_LEASETIME}" == "24h" ]]; then
-        #Installation is affected by known bug, introduced in a previous version.
-        #This will automatically clean up setupVars.conf and remove the unnecessary "h"
-        leasetime="24"
-        change_setting "DHCP_LEASETIME" "${leasetime}"
-    else
-        leasetime="${DHCP_LEASETIME}h"
-    fi
+        if [[ "${DHCP_LEASETIME}" == "0" ]]; then
+            leasetime="infinite"
+        elif [[ "${DHCP_LEASETIME}" == "" ]]; then
+            leasetime="24"
+            change_setting "DHCP_LEASETIME" "${leasetime}"
+        elif [[ "${DHCP_LEASETIME}" == "24h" ]]; then
+            #Installation is affected by known bug, introduced in a previous version.
+            #This will automatically clean up setupVars.conf and remove the unnecessary "h"
+            leasetime="24"
+            change_setting "DHCP_LEASETIME" "${leasetime}"
+        else
+            leasetime="${DHCP_LEASETIME}h"
+        fi
 
-    # Write settings to file
-    echo "###############################################################################
+        # Write settings to file
+        echo "###############################################################################
 #  DHCP SERVER CONFIG FILE AUTOMATICALLY POPULATED BY PI-HOLE WEB INTERFACE.  #
 #            ANY CHANGES MADE TO THIS FILE WILL BE LOST ON CHANGE             #
 ###############################################################################
@@ -414,16 +414,15 @@ dhcp-leasefile=/etc/pihole/dhcp.leases
         if  [[ "${DNS_FQDN_REQUIRED}" == true ]]; then
           echo "local=/${PIHOLE_DOMAIN}/" >> "${dhcpconfig}"
         fi
-    fi
 
-    # Sourced from setupVars
-    # shellcheck disable=SC2154
-    if [[ "${DHCP_rapid_commit}" == "true" ]]; then
-        echo "dhcp-rapid-commit" >> "${dhcpconfig}"
-    fi
+        # Sourced from setupVars
+        # shellcheck disable=SC2154
+        if [[ "${DHCP_rapid_commit}" == "true" ]]; then
+            echo "dhcp-rapid-commit" >> "${dhcpconfig}"
+        fi
 
-    if [[ "${DHCP_IPv6}" == "true" ]]; then
-        echo "#quiet-dhcp6
+        if [[ "${DHCP_IPv6}" == "true" ]]; then
+            echo "#quiet-dhcp6
 #enable-ra
 dhcp-option=option6:dns-server,[::]
 dhcp-range=::100,::1ff,constructor:${interface},ra-names,slaac,${leasetime}
@@ -612,7 +611,7 @@ Interfaces:
   single              Listen only on ${PIHOLE_INTERFACE} interface
   all                 Listen on all interfaces, permit all origins"
         exit 0
-  fi
+    fi
 
     if [[ "${args[2]}" == "all" ]]; then
         echo -e "  ${INFO} Listening on all interfaces, permitting all origins. Please use a firewall!"
@@ -661,18 +660,18 @@ addAudit()
     domains=""
     for domain in "$@"
     do
-      # Check domain to be added. Only continue if it is valid
-      validDomain="$(checkDomain "${domain}")"
-      if [[ -n "${validDomain}" ]]; then
-        # Put comma in between domains when there is
-        # more than one domains to be added
-        # SQL INSERT allows adding multiple rows at once using the format
-        ## INSERT INTO table (domain) VALUES ('abc.de'),('fgh.ij'),('klm.no'),('pqr.st');
-        if [[ -n "${domains}" ]]; then
-          domains="${domains},"
+        # Check domain to be added. Only continue if it is valid
+        validDomain="$(checkDomain "${domain}")"
+        if [[ -n "${validDomain}" ]]; then
+            # Put comma in between domains when there is
+            # more than one domains to be added
+            # SQL INSERT allows adding multiple rows at once using the format
+            ## INSERT INTO table (domain) VALUES ('abc.de'),('fgh.ij'),('klm.no'),('pqr.st');
+            if [[ -n "${domains}" ]]; then
+                domains="${domains},"
+            fi
+            domains="${domains}('${domain}')"
         fi
-        domains="${domains}('${domain}')"
-      fi
     done
     # Insert only the domain here. The date_added field will be
     # filled with its default value (date_added = current timestamp)
@@ -697,7 +696,7 @@ AddCustomDNSAddress() {
 
     ip="${args[2]}"
     host="${args[3]}"
-	echo "${ip} ${host}" >> "${dnscustomfile}"
+    echo "${ip} ${host}" >> "${dnscustomfile}"
 
     # Restart dnsmasq to load new custom DNS entries
     RestartDNS

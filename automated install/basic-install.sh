@@ -77,7 +77,7 @@ PI_HOLE_CONFIG_DIR="/etc/pihole"
 PI_HOLE_BIN_DIR="/usr/local/bin"
 PI_HOLE_BLOCKPAGE_DIR="${webroot}/pihole"
 if [ -z "$useUpdateVars" ]; then
-  useUpdateVars=false
+    useUpdateVars=false
 fi
 
 adlistFile="/etc/pihole/adlists.list"
@@ -91,16 +91,16 @@ PRIVACY_LEVEL=0
 CACHE_SIZE=10000
 
 if [ -z "${USER}" ]; then
-  USER="$(id -un)"
+    USER="$(id -un)"
 fi
 
 
 # Check if we are running on a real terminal and find the rows and columns
 # If there is no real terminal, we will default to 80x24
 if [ -t 0 ] ; then
-  screen_size=$(stty size)
+    screen_size=$(stty size)
 else
-  screen_size="24 80"
+    screen_size="24 80"
 fi
 # Determine terminal rows and columns by parsing screen_size
 printf -v rows '%d' "${screen_size%% *}"
@@ -149,7 +149,7 @@ fi
 # A simple function that just echoes out our logo in ASCII format
 # This lets users know that it is a Pi-hole, LLC product
 show_ascii_berry() {
-  echo -e "
+    echo -e "
         ${COL_LIGHT_GREEN}.;;,.
         .ccccc:,.
          :cccclll:.      ..,,
@@ -206,8 +206,7 @@ os_check() {
             fi
 
             IFS=" " read -r -a supportedOS < <(echo "${response}" | tr -d '"')
-            for distro_and_versions in "${supportedOS[@]}"
-            do
+            for distro_and_versions in "${supportedOS[@]}"; do
                 distro_part="${distro_and_versions%%=*}"
                 versions_part="${distro_and_versions##*=}"
 
@@ -215,8 +214,7 @@ os_check() {
                 if [[ "${detected_os^^}" =~ ${distro_part^^} ]]; then
                     valid_os=true
                     IFS="," read -r -a supportedVer <<<"${versions_part}"
-                    for version in "${supportedVer[@]}"
-                    do
+                    for version in "${supportedVer[@]}"; do
                         if [[ "${detected_version}" =~ $version ]]; then
                             valid_version=true
                             break
@@ -450,32 +448,32 @@ elif is_command rpm ; then
             # Since PHP 7 is available by default, install via default PHP package names
             : # do nothing as PHP is current
         else
-            REMI_PKG="remi-release"
-            REMI_REPO="remi-php72"
-            rpm -q ${REMI_PKG} &> /dev/null || rc=$?
-        if [[ $rc -ne 0 ]]; then
-            # The PHP version available via default repositories is older than version 7
-            if ! whiptail --defaultno --title "PHP 7 Update (recommended)" --yesno "PHP 7.x is recommended for both security and language features.\\nWould you like to install PHP7 via Remi's RPM repository?\\n\\nSee: https://rpms.remirepo.net for more information" "${r}" "${c}"; then
-                # User decided to NOT update PHP from REMI, attempt to install the default available PHP version
-                printf "  %b User opt-out of PHP 7 upgrade on CentOS. Deprecated PHP may be in use.\\n" "${INFO}"
-                : # continue with unsupported php version
-            else
-                printf "  %b Enabling Remi's RPM repository (https://rpms.remirepo.net)\\n" "${INFO}"
-                "${PKG_INSTALL[@]}" "https://rpms.remirepo.net/enterprise/${REMI_PKG}-$(rpm -E '%{rhel}').rpm" &> /dev/null
-                # enable the PHP 7 repository via yum-config-manager (provided by yum-utils)
-                "${PKG_INSTALL[@]}" "yum-utils" &> /dev/null
-                yum-config-manager --enable ${REMI_REPO} &> /dev/null
-                printf "  %b Remi's RPM repository has been enabled for PHP7\\n" "${TICK}"
-                # trigger an install/update of PHP to ensure previous version of PHP is updated from REMI
-                if "${PKG_INSTALL[@]}" "php-cli" &> /dev/null; then
-                    printf "  %b PHP7 installed/updated via Remi's RPM repository\\n" "${TICK}"
+            if [[ $rc -ne 0 ]]; then
+                REMI_PKG="remi-release"
+                REMI_REPO="remi-php72"
+                rpm -q ${REMI_PKG} &> /dev/null || rc=$?
+                # The PHP version available via default repositories is older than version 7
+                if ! whiptail --defaultno --title "PHP 7 Update (recommended)" --yesno "PHP 7.x is recommended for both security and language features.\\nWould you like to install PHP7 via Remi's RPM repository?\\n\\nSee: https://rpms.remirepo.net for more information" "${r}" "${c}"; then
+                    # User decided to NOT update PHP from REMI, attempt to install the default available PHP version
+                    printf "  %b User opt-out of PHP 7 upgrade on CentOS. Deprecated PHP may be in use.\\n" "${INFO}"
+                    : # continue with unsupported php version
                 else
-                    printf "  %b There was a problem updating to PHP7 via Remi's RPM repository\\n" "${CROSS}"
-                    exit 1
+                    printf "  %b Enabling Remi's RPM repository (https://rpms.remirepo.net)\\n" "${INFO}"
+                    "${PKG_INSTALL[@]}" "https://rpms.remirepo.net/enterprise/${REMI_PKG}-$(rpm -E '%{rhel}').rpm" &> /dev/null
+                    # enable the PHP 7 repository via yum-config-manager (provided by yum-utils)
+                    "${PKG_INSTALL[@]}" "yum-utils" &> /dev/null
+                    yum-config-manager --enable ${REMI_REPO} &> /dev/null
+                    printf "  %b Remi's RPM repository has been enabled for PHP7\\n" "${TICK}"
+                    # trigger an install/update of PHP to ensure previous version of PHP is updated from REMI
+                    if "${PKG_INSTALL[@]}" "php-cli" &> /dev/null; then
+                        printf "  %b PHP7 installed/updated via Remi's RPM repository\\n" "${TICK}"
+                    else
+                        printf "  %b There was a problem updating to PHP7 via Remi's RPM repository\\n" "${CROSS}"
+                        exit 1
+                    fi
                 fi
             fi
         fi
-    fi
     else
         # Warn user of unsupported version of Fedora or CentOS
         if ! whiptail --defaultno --title "Unsupported RPM based distribution" --yesno "Would you like to continue installation on an unsupported RPM based distribution?\\n\\nPlease ensure the following packages have been installed manually:\\n\\n- lighttpd\\n- lighttpd-fastcgi\\n- PHP version 7+" "${r}" "${c}"; then
@@ -583,7 +581,7 @@ update_repo() {
     # In case extra commits have been added after tagging/release (i.e in case of metadata updates/README.MD tweaks)
     curBranch=$(git rev-parse --abbrev-ref HEAD)
     if [[ "${curBranch}" == "master" ]]; then
-         git reset --hard "$(git describe --abbrev=0 --tags)" || return $?
+        git reset --hard "$(git describe --abbrev=0 --tags)" || return $?
     fi
     # Show a completion message
     printf "%b  %b %s\\n" "${OVER}" "${TICK}" "${str}"
@@ -831,12 +829,11 @@ use4andor6() {
     # In a variable, show the choices available; exit if Cancel is selected
     choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty) || { printf "  %bCancel was selected, exiting installer%b\\n" "${COL_LIGHT_RED}" "${COL_NC}"; exit 1; }
     # For each choice available,
-    for choice in ${choices}
-    do
+    for choice in ${choices}; do
         # Set the values to true
         case ${choice} in
-        IPv4  )   useIPv4=true;;
-        IPv6  )   useIPv6=true;;
+            IPv4  )   useIPv4=true ;;
+            IPv6  )   useIPv6=true ;;
         esac
     done
     # If IPv4 is to be used,
@@ -877,34 +874,34 @@ If you are worried, either manually set the address, or modify the DHCP reservat
 It is also possible to use a DHCP reservation, but if you are going to do that, you might as well set a static address." "${r}" "${c}"
     # Nothing else to do since the variables are already set above
     else
-    # Otherwise, we need to ask the user to input their desired settings.
-    # Start by getting the IPv4 address (pre-filling it with info gathered from DHCP)
-    # Start a loop to let the user enter their information with the chance to go back and edit it if necessary
-    until [[ "${ipSettingsCorrect}" = True ]]; do
+        # Start by getting the IPv4 address (pre-filling it with info gathered from DHCP)
+        # Start a loop to let the user enter their information with the chance to go back and edit it if necessary
+        # Otherwise, we need to ask the user to input their desired settings.
+        until [[ "${ipSettingsCorrect}" = True ]]; do
 
-        # Ask for the IPv4 address
-        IPV4_ADDRESS=$(whiptail --backtitle "Calibrating network interface" --title "IPv4 address" --inputbox "Enter your desired IPv4 address" "${r}" "${c}" "${IPV4_ADDRESS}" 3>&1 1>&2 2>&3) || \
-        # Canceling IPv4 settings window
-        { ipSettingsCorrect=False; echo -e "  ${COL_LIGHT_RED}Cancel was selected, exiting installer${COL_NC}"; exit 1; }
-        printf "  %b Your static IPv4 address: %s\\n" "${INFO}" "${IPV4_ADDRESS}"
+            # Ask for the IPv4 address
+            IPV4_ADDRESS=$(whiptail --backtitle "Calibrating network interface" --title "IPv4 address" --inputbox "Enter your desired IPv4 address" "${r}" "${c}" "${IPV4_ADDRESS}" 3>&1 1>&2 2>&3) || \
+            # Canceling IPv4 settings window
+            { ipSettingsCorrect=False; echo -e "  ${COL_LIGHT_RED}Cancel was selected, exiting installer${COL_NC}"; exit 1; }
+            printf "  %b Your static IPv4 address: %s\\n" "${INFO}" "${IPV4_ADDRESS}"
 
-        # Ask for the gateway
-        IPv4gw=$(whiptail --backtitle "Calibrating network interface" --title "IPv4 gateway (router)" --inputbox "Enter your desired IPv4 default gateway" "${r}" "${c}" "${IPv4gw}" 3>&1 1>&2 2>&3) || \
-        # Canceling gateway settings window
-        { ipSettingsCorrect=False; echo -e "  ${COL_LIGHT_RED}Cancel was selected, exiting installer${COL_NC}"; exit 1; }
-        printf "  %b Your static IPv4 gateway: %s\\n" "${INFO}" "${IPv4gw}"
+            # Ask for the gateway
+            IPv4gw=$(whiptail --backtitle "Calibrating network interface" --title "IPv4 gateway (router)" --inputbox "Enter your desired IPv4 default gateway" "${r}" "${c}" "${IPv4gw}" 3>&1 1>&2 2>&3) || \
+            # Canceling gateway settings window
+            { ipSettingsCorrect=False; echo -e "  ${COL_LIGHT_RED}Cancel was selected, exiting installer${COL_NC}"; exit 1; }
+            printf "  %b Your static IPv4 gateway: %s\\n" "${INFO}" "${IPv4gw}"
 
-        # Give the user a chance to review their settings before moving on
-        if whiptail --backtitle "Calibrating network interface" --title "Static IP Address" --yesno "Are these settings correct?
-            IP address: ${IPV4_ADDRESS}
-            Gateway:    ${IPv4gw}" "${r}" "${c}"; then
-                # After that's done, the loop ends and we move on
-                ipSettingsCorrect=True
-        else
-            # If the settings are wrong, the loop continues
-            ipSettingsCorrect=False
-        fi
-    done
+            # Give the user a chance to review their settings before moving on
+            if whiptail --backtitle "Calibrating network interface" --title "Static IP Address" --yesno "Are these settings correct?
+                IP address: ${IPV4_ADDRESS}
+                Gateway:    ${IPv4gw}" "${r}" "${c}"; then
+                    # After that's done, the loop ends and we move on
+                    ipSettingsCorrect=True
+            else
+                # If the settings are wrong, the loop continues
+                ipSettingsCorrect=False
+            fi
+        done
     # End the if statement for DHCP vs. static
     fi
 }
@@ -948,16 +945,16 @@ setIFCFG() {
         cp -p "${IFCFG_FILE}" "${IFCFG_FILE}".pihole.orig
         # Build Interface configuration file using the GLOBAL variables we have
         {
-        echo "# Configured via Pi-hole installer"
-        echo "DEVICE=$PIHOLE_INTERFACE"
-        echo "BOOTPROTO=none"
-        echo "ONBOOT=yes"
-        echo "IPADDR=$IPADDR"
-        echo "PREFIX=$CIDR"
-        echo "GATEWAY=$IPv4gw"
-        echo "DNS1=$PIHOLE_DNS_1"
-        echo "DNS2=$PIHOLE_DNS_2"
-        echo "USERCTL=no"
+            echo "# Configured via Pi-hole installer"
+            echo "DEVICE=$PIHOLE_INTERFACE"
+            echo "BOOTPROTO=none"
+            echo "ONBOOT=yes"
+            echo "IPADDR=$IPADDR"
+            echo "PREFIX=$CIDR"
+            echo "GATEWAY=$IPv4gw"
+            echo "DNS1=$PIHOLE_DNS_1"
+            echo "DNS2=$PIHOLE_DNS_2"
+            echo "USERCTL=no"
         }> "${IFCFG_FILE}"
         chmod 644 "${IFCFG_FILE}"
         chown root:root "${IFCFG_FILE}"
@@ -990,7 +987,7 @@ setStaticIPv4() {
         return 0
     fi
     # If a DHCPCD config file was not found, check for an ifcfg config file based on the interface name
-    if [[ -f "/etc/sysconfig/network-scripts/ifcfg-${PIHOLE_INTERFACE}" ]];then
+    if [[ -f "/etc/sysconfig/network-scripts/ifcfg-${PIHOLE_INTERFACE}" ]]; then
         # If it exists, then we can configure using IFCFG
         IFCFG_FILE=/etc/sysconfig/network-scripts/ifcfg-${PIHOLE_INTERFACE}
         setIFCFG "${IFCFG_FILE}"
@@ -999,7 +996,7 @@ setStaticIPv4() {
     # If an ifcfg config does not exists for the interface name, search for one based on the connection name via network manager
     if is_command nmcli && nmcli general status &> /dev/null; then
         CONNECTION_NAME=$(nmcli dev show "${PIHOLE_INTERFACE}" | grep 'GENERAL.CONNECTION' | cut -d: -f2 | sed 's/^System//' | xargs | tr ' ' '_')
-        if [[ -f "/etc/sysconfig/network-scripts/ifcfg-${CONNECTION_NAME}" ]];then
+        if [[ -f "/etc/sysconfig/network-scripts/ifcfg-${CONNECTION_NAME}" ]]; then
             # If it exists, then we can configure using IFCFG
             IFCFG_FILE=/etc/sysconfig/network-scripts/ifcfg-${CONNECTION_NAME}
             setIFCFG "${IFCFG_FILE}"
@@ -1064,8 +1061,7 @@ setDNS() {
     # and set the new one to newline
     IFS=$'\n'
     # Put the DNS Servers into an array
-    for DNSServer in ${DNS_SERVERS}
-    do
+    for DNSServer in ${DNS_SERVERS}; do
         DNSName="$(cut -d';' -f1 <<< "${DNSServer}")"
         DNSChooseOptions[DNSServerCount]="${DNSName}"
         (( DNSServerCount=DNSServerCount+1 ))
@@ -1149,8 +1145,7 @@ setDNS() {
         OIFS=$IFS
         # and set the new one to newline
         IFS=$'\n'
-        for DNSServer in ${DNS_SERVERS}
-        do
+        for DNSServer in ${DNS_SERVERS}; do
             DNSName="$(cut -d';' -f1 <<< "${DNSServer}")"
             if [[ "${DNSchoices}" == "${DNSName}" ]]
             then
@@ -1253,7 +1248,9 @@ setAdminFlag() {
     if [[ "${INSTALL_WEB_SERVER}" == true ]]; then
         # Get list of required PHP modules, excluding base package (common) and handler (cgi)
         local i php_modules
-        for i in "${PIHOLE_WEB_DEPS[@]}"; do [[ $i == 'php'* && $i != *'-common' && $i != *'-cgi' ]] && php_modules+=" ${i#*-}"; done
+        for i in "${PIHOLE_WEB_DEPS[@]}"; do
+            [[ $i == 'php'* && $i != *'-common' && $i != *'-cgi' ]] && php_modules+=" ${i#*-}"
+        done
         WebToggleCommand=(whiptail --separate-output --radiolist "Do you wish to install the web server (lighttpd) and required PHP modules?\\n\\nNB: If you disable this, and, do not have an existing web server and required PHP modules (${php_modules# }) installed, the web interface will not function. Additionally the web server user needs to be member of the \"pihole\" group for full functionality." "${r}" "${c}" 6)
         # Enable as default and recommended option
         WebChooseOptions=("On (Recommended)" "" on
@@ -1289,8 +1286,7 @@ chooseBlocklists() {
     # In a variable, show the choices available; exit if Cancel is selected
     choices=$("${cmd[@]}" "${options[@]}" 2>&1 >/dev/tty) || { printf "  %bCancel was selected, exiting installer%b\\n" "${COL_LIGHT_RED}" "${COL_NC}"; rm "${adlistFile}" ;exit 1; }
     # Add all selected choices to the lists file
-    for choice in ${choices}
-    do
+    for choice in ${choices}; do
         appendToListsFile "${choice}"
     done
     # Create an empty adList file with appropriate permissions.
@@ -1344,8 +1340,8 @@ version_check_dnsmasq() {
             install -D -m 644 -T "${dnsmasq_original_config}" "${dnsmasq_conf}"
             printf "%b  %b Restoring default dnsmasq.conf...\\n" "${OVER}"  "${TICK}"
         else
-        # Otherwise, don't to anything
-        printf " it is not a Pi-hole file, leaving alone!\\n"
+            # Otherwise, don't to anything
+            printf " it is not a Pi-hole file, leaving alone!\\n"
         fi
     else
         # If a file cannot be found,
@@ -1357,7 +1353,7 @@ version_check_dnsmasq() {
 
     printf "  %b Copying 01-pihole.conf to /etc/dnsmasq.d/01-pihole.conf..." "${INFO}"
     # Check to see if dnsmasq directory exists (it may not due to being a fresh install and dnsmasq no longer being a dependency)
-    if [[ ! -d "/etc/dnsmasq.d"  ]];then
+    if [[ ! -d "/etc/dnsmasq.d"  ]]; then
         install -d -m 755 "/etc/dnsmasq.d"
     fi
     # Copy the new Pi-hole DNS config file into the dnsmasq.d directory
@@ -1380,8 +1376,8 @@ version_check_dnsmasq() {
         sed -i '/^server=@DNS2@/d' "${dnsmasq_pihole_01_location}"
     fi
 
-	# Set the cache size
-	sed -i "s/@CACHE_SIZE@/$CACHE_SIZE/" ${dnsmasq_pihole_01_location}
+    # Set the cache size
+    sed -i "s/@CACHE_SIZE@/$CACHE_SIZE/" ${dnsmasq_pihole_01_location}
 
     sed -i 's/^#conf-dir=\/etc\/dnsmasq.d$/conf-dir=\/etc\/dnsmasq.d/' "${dnsmasq_conf}"
 
@@ -1903,16 +1899,16 @@ finalExports() {
     fi
     # echo the information to the user
     {
-    echo "PIHOLE_INTERFACE=${PIHOLE_INTERFACE}"
-    echo "IPV4_ADDRESS=${IPV4_ADDRESS}"
-    echo "IPV6_ADDRESS=${IPV6_ADDRESS}"
-    echo "PIHOLE_DNS_1=${PIHOLE_DNS_1}"
-    echo "PIHOLE_DNS_2=${PIHOLE_DNS_2}"
-    echo "QUERY_LOGGING=${QUERY_LOGGING}"
-    echo "INSTALL_WEB_SERVER=${INSTALL_WEB_SERVER}"
-    echo "INSTALL_WEB_INTERFACE=${INSTALL_WEB_INTERFACE}"
-    echo "LIGHTTPD_ENABLED=${LIGHTTPD_ENABLED}"
-    echo "CACHE_SIZE=${CACHE_SIZE}"
+        echo "PIHOLE_INTERFACE=${PIHOLE_INTERFACE}"
+        echo "IPV4_ADDRESS=${IPV4_ADDRESS}"
+        echo "IPV6_ADDRESS=${IPV6_ADDRESS}"
+        echo "PIHOLE_DNS_1=${PIHOLE_DNS_1}"
+        echo "PIHOLE_DNS_2=${PIHOLE_DNS_2}"
+        echo "QUERY_LOGGING=${QUERY_LOGGING}"
+        echo "INSTALL_WEB_SERVER=${INSTALL_WEB_SERVER}"
+        echo "INSTALL_WEB_INTERFACE=${INSTALL_WEB_INTERFACE}"
+        echo "LIGHTTPD_ENABLED=${LIGHTTPD_ENABLED}"
+        echo "CACHE_SIZE=${CACHE_SIZE}"
     }>> "${setupVars}"
     chmod 644 "${setupVars}"
 
@@ -2290,7 +2286,7 @@ FTLinstall() {
     local ftlBranch
     local url
 
-    if [[ -f "/etc/pihole/ftlbranch" ]];then
+    if [[ -f "/etc/pihole/ftlbranch" ]]; then
         ftlBranch=$(</etc/pihole/ftlbranch)
     else
         ftlBranch="master"
@@ -2300,7 +2296,7 @@ FTLinstall() {
     binary="${1}"
 
     # Determine which version of FTL to download
-    if [[ "${ftlBranch}" == "master" ]];then
+    if [[ "${ftlBranch}" == "master" ]]; then
         url="https://github.com/pi-hole/ftl/releases/latest/download"
     else
         url="https://ftl.pi-hole.net/${ftlBranch}"
@@ -2351,7 +2347,7 @@ FTLinstall() {
 disable_dnsmasq() {
     # dnsmasq can now be stopped and disabled if it exists
     if which dnsmasq &> /dev/null; then
-        if check_service_active "dnsmasq";then
+        if check_service_active "dnsmasq"; then
             printf "  %b FTL can now resolve DNS Queries without dnsmasq running separately\\n" "${INFO}"
             stop_service dnsmasq
             disable_service dnsmasq
@@ -2467,7 +2463,7 @@ FTLcheckUpdate() {
 
     local ftlBranch
 
-    if [[ -f "/etc/pihole/ftlbranch" ]];then
+    if [[ -f "/etc/pihole/ftlbranch" ]]; then
         ftlBranch=$(</etc/pihole/ftlbranch)
     else
         ftlBranch="master"
@@ -2481,7 +2477,7 @@ FTLcheckUpdate() {
 
     # if dnsmasq exists and is running at this point, force reinstall of FTL Binary
     if which dnsmasq &> /dev/null; then
-        if check_service_active "dnsmasq";then
+        if check_service_active "dnsmasq"; then
             return 0
         fi
     fi
